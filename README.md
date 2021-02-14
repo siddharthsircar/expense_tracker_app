@@ -1,6 +1,6 @@
 # Personal Expense Tracker
 
-A new Flutter project.
+A new Personal Expense Tracker to track your day to day eexpenses. Developed using material theme.
 
 ## Getting Started
 
