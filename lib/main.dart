@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:personal_expense_tracker/widgets/currency_selector.dart';
+import 'package:intl/intl.dart';
 
+import './widgets/currency_selector.dart';
 import './widgets/new_transaction.dart';
 import './models/transaction.dart';
 import './widgets/transaction_list.dart';
 import './widgets/chart.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
   runApp(MyApp());
 }
 
@@ -103,26 +109,56 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Personal Expenses',
-        ),
-        actions: <Widget>[
-          CurrencySelector(defaultCurrency, _updateCurrencyValue)
-        ],
+    final appBar = AppBar(
+      title: Text(
+        'Personal Expenses',
       ),
+      actions: <Widget>[
+        CurrencySelector(defaultCurrency, _updateCurrencyValue)
+      ],
+    );
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Chart(_recentTransactions, defaultCurrency),
-            TransactionList(
-                _userTransactions, _deleteTransaction, defaultCurrency),
+            Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.03,
+              margin: EdgeInsets.all(5),
+              child: Text(
+                DateFormat.yMMMM().format(DateTime.now()),
+                style: TextStyle(
+                  color: Colors.amber,
+                  fontFamily: 'Quicksand',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.22,
+              child: Chart(_recentTransactions, defaultCurrency),
+            ),
+            Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.70,
+              child: TransactionList(
+                  _userTransactions, _deleteTransaction, defaultCurrency),
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        elevation: 10,
         child: Icon(Icons.add),
         onPressed: () => _openNewTransactionModal(context),
       ),
