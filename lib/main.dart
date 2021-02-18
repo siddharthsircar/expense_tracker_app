@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personal_expense_tracker/widgets/currency_selector.dart';
 
 import './widgets/new_transaction.dart';
 import './models/transaction.dart';
@@ -75,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _userTransactions.add(newTx);
+      _userTransactions.sort((a, b) => (b.date).compareTo(a.date));
     });
   }
 
@@ -92,7 +94,12 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  String currency = 'USD';
+  String defaultCurrency = 'INR';
+  void _updateCurrencyValue(String newValue) {
+    setState(() {
+      defaultCurrency = newValue;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,43 +109,16 @@ class _MyHomePageState extends State<MyHomePage> {
           'Personal Expenses',
         ),
         actions: <Widget>[
-          DropdownButton(
-              dropdownColor: Colors.purple,
-              value: currency,
-              style: TextStyle(
-                color: Theme.of(context).textTheme.button.color,
-              ),
-              underline: Container(
-                alignment: Alignment.bottomRight,
-                color: Theme.of(context).primaryColor,
-              ),
-              items: <String>['USD', 'INR']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String newValue) {
-                setState(() {
-                  currency = newValue;
-                });
-              })
+          CurrencySelector(defaultCurrency, _updateCurrencyValue)
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Chart(_recentTransactions, currency),
-            Container(
-              padding: EdgeInsets.all(5),
-              child: Text(
-                ' Expenses ',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            TransactionList(_userTransactions, _deleteTransaction, currency),
+            Chart(_recentTransactions, defaultCurrency),
+            TransactionList(
+                _userTransactions, _deleteTransaction, defaultCurrency),
           ],
         ),
       ),

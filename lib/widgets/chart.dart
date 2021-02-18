@@ -33,6 +33,7 @@ class Chart extends StatelessWidget {
         }
       }
       return {
+        'date': DateFormat.d().format(weekday),
         'day': DateFormat.E().format(weekday).substring(0, 2),
         'amount': totalSum,
       };
@@ -52,21 +53,34 @@ class Chart extends StatelessWidget {
       margin: EdgeInsets.all(9),
       child: Padding(
         padding: EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: groupedTransactionValues.map((data) {
-            return Flexible(
-              fit: FlexFit.tight,
-              child: ChartBar(
-                data['day'],
-                data['amount'],
-                totalSpending == 0.0
-                    ? 0.0
-                    : (data['amount'] as double) / totalSpending,
-                currencyIcon,
+        child: Column(
+          children: [
+            Text(
+              DateFormat.yMMMM().format(DateTime.now()),
+              style: TextStyle(
+                color: Colors.amber,
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
-            );
-          }).toList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: groupedTransactionValues.map((data) {
+                return Flexible(
+                  fit: FlexFit.tight,
+                  child: ChartBar(
+                    data['day'],
+                    data['date'],
+                    totalSpending == 0.0
+                        ? 0.0
+                        : (data['amount'] as double) / totalSpending,
+                    currencyIcon,
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
         ),
       ),
     );

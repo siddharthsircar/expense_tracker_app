@@ -2,23 +2,24 @@ import 'package:flutter/material.dart';
 
 class ChartBar extends StatelessWidget {
   final String label;
-  final double spending;
+  final String date;
   final double spendingPercentageTotal;
   final String currencyIcon;
 
-  ChartBar(this.label, this.spending, this.spendingPercentageTotal,
-      this.currencyIcon);
+  ChartBar(
+      this.label, this.date, this.spendingPercentageTotal, this.currencyIcon);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        // Container(
-        //   height: 20,
-        //   child: FittedBox(
-        //     child: Text('$currencyIcon${spending.toStringAsFixed(0)}'),
-        //   ),
-        // ),
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Quicksand',
+          ),
+        ),
         SizedBox(
           height: 4,
         ),
@@ -45,7 +46,13 @@ class ChartBar extends StatelessWidget {
             ],
           ),
         ),
-        Text(label)
+        Text(
+          date,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Quicksand',
+          ),
+        )
       ],
     );
   }

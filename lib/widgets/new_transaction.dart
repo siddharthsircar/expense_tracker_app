@@ -70,7 +70,7 @@ class _NewTransactionState extends State<NewTransaction> {
             TextField(
               controller: _titleController,
               decoration: InputDecoration(
-                labelText: 'Item Name',
+                labelText: 'Item',
               ),
               onSubmitted: (_) => _submitTransactionData(),
             ),
@@ -91,8 +91,9 @@ class _NewTransactionState extends State<NewTransaction> {
                   Expanded(
                     child: Text(
                       _selectedDate == null
-                          ? 'Choose date'
-                          : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}',
+                          ? 'Date:'
+                          : 'Date:   ${DateFormat.yMd().format(_selectedDate)}',
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                   FlatButton(
