@@ -1,23 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:personal_expense_tracker/widgets/transaction_organizer.dart';
 
 import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
-  final List<Transaction> transactions;
+  final List<Transaction> _transactions;
+  final Function _deleteTransaction;
+  final currency;
 
-  TransactionList(this.transactions);
+  TransactionList(this._transactions, this._deleteTransaction, this.currency);
+
+  get currencyIcon {
+    if (currency == 'USD') {
+      return '\$';
+    } else if (currency == 'INR') {
+      return 'Rs.';
+    }
+  }
+
+  List<DateTime> get transactionDates {
+    return List.generate(
+        _transactions.length, (index) => _transactions[index].date);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 460,
-      child: transactions.isEmpty
+      child: _transactions.isEmpty
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: 200,
+                  height: 100,
                   child: Image.asset(
                     'assets/images/waiting.png',
                     fit: BoxFit.cover,
@@ -33,58 +49,57 @@ class TransactionList extends StatelessWidget {
               ],
             )
           : ListView.builder(
-              itemBuilder: (ctx, index) {
+              itemBuilder: (context, index) {
                 return Card(
-                  elevation: 8,
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 15,
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 15,
+                  ),
+                  child: ListTile(
+                    leading: Container(
+                      height: 45,
+                      width: 80,
+                      // radius: 35,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
                         ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        child: Text(
-                          '\$${transactions[index].amount.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Quicksand',
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            transactions[index].title,
-                            textAlign: TextAlign.left,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          Text(
-                            DateFormat.yMMMd().format(transactions[index].date),
-                            textAlign: TextAlign.left,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: FittedBox(
+                          child: Text(
+                            '$currencyIcon${_transactions[index].amount.toStringAsFixed(2)}',
                             style: TextStyle(
-                              fontFamily: 'Quicksand',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                              color: Colors.grey,
+                              color: Colors.white,
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ],
+                    ),
+                    title: Text(
+                      _transactions[index].title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(
+                      DateFormat.yMMMd().format(_transactions[index].date),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                      ),
+                      color: Theme.of(context).errorColor,
+                      onPressed: () {
+                        _deleteTransaction(_transactions[index].id);
+                      },
+                    ),
                   ),
                 );
               },
-              itemCount: transactions.length,
+              itemCount: _transactions.length,
             ),
     );
   }
