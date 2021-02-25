@@ -64,6 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Transaction> _userTransactions = [];
 
+  bool _showChart = false;
+
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((transaction) {
       return transaction.date.isAfter(DateTime.now().subtract(
@@ -94,6 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _openNewTransactionModal(BuildContext ctx) {
     showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        isScrollControlled: true,
         context: ctx,
         builder: (_) {
           return NewTransaction(_addNewTransaction);
@@ -109,6 +114,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appBar = AppBar(
       title: Text(
         'Personal Expenses',
@@ -117,43 +125,96 @@ class _MyHomePageState extends State<MyHomePage> {
         CurrencySelector(defaultCurrency, _updateCurrencyValue)
       ],
     );
+
+    final txListWidget = Container(
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.60,
+      child: TransactionList(
+          _userTransactions, _deleteTransaction, defaultCurrency),
+    );
+
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Container(
-              height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height -
-                      MediaQuery.of(context).padding.top) *
-                  0.03,
-              margin: EdgeInsets.all(5),
-              child: Text(
-                DateFormat.yMMMM().format(DateTime.now()),
-                style: TextStyle(
-                  color: Colors.amber,
-                  fontFamily: 'Quicksand',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
+                  )
+                ],
               ),
-            ),
-            Container(
-              height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height -
-                      MediaQuery.of(context).padding.top) *
-                  0.22,
-              child: Chart(_recentTransactions, defaultCurrency),
-            ),
-            Container(
-              height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height -
-                      MediaQuery.of(context).padding.top) *
-                  0.70,
-              child: TransactionList(
-                  _userTransactions, _deleteTransaction, defaultCurrency),
-            ),
+            if (!isLandscape)
+              Column(
+                children: [
+                  Container(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.034,
+                    margin: EdgeInsets.all(10),
+                    child: Text(
+                      DateFormat.yMMMM().format(DateTime.now()),
+                      style: TextStyle(
+                        color: Colors.amber,
+                        fontFamily: 'Quicksand',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: (MediaQuery.of(context).size.height -
+                            appBar.preferredSize.height -
+                            MediaQuery.of(context).padding.top) *
+                        0.30,
+                    child: Chart(_recentTransactions, defaultCurrency),
+                  ),
+                ],
+              ),
+            if (!isLandscape) txListWidget,
+            if (isLandscape)
+              _showChart
+                  ? Column(
+                      children: [
+                        Container(
+                          height: (MediaQuery.of(context).size.height -
+                                  appBar.preferredSize.height -
+                                  MediaQuery.of(context).padding.top) *
+                              0.07,
+                          margin: EdgeInsets.all(5),
+                          child: Text(
+                            DateFormat.yMMMM().format(DateTime.now()),
+                            style: TextStyle(
+                              color: Colors.amber,
+                              fontFamily: 'Quicksand',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: (MediaQuery.of(context).size.height -
+                                  appBar.preferredSize.height -
+                                  MediaQuery.of(context).padding.top) *
+                              0.6,
+                          child: Chart(_recentTransactions, defaultCurrency),
+                        ),
+                      ],
+                    )
+                  : txListWidget
           ],
         ),
       ),
