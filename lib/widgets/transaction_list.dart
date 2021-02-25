@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:personal_expense_tracker/widgets/transaction_organizer.dart';
 
 import '../models/transaction.dart';
 

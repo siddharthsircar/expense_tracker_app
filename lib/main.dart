@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
         MediaQuery.of(context).orientation == Orientation.landscape;
 
     final appBar = AppBar(
-      title: Text(
+      title: const Text(
         'Personal Expenses',
       ),
       actions: <Widget>[
@@ -163,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: (MediaQuery.of(context).size.height -
                             appBar.preferredSize.height -
                             MediaQuery.of(context).padding.top) *
-                        0.034,
+                        0.035,
                     margin: EdgeInsets.all(10),
                     child: Text(
                       DateFormat.yMMMM().format(DateTime.now()),
@@ -171,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         color: Colors.amber,
                         fontFamily: 'Quicksand',
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -179,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: (MediaQuery.of(context).size.height -
                             appBar.preferredSize.height -
                             MediaQuery.of(context).padding.top) *
-                        0.30,
+                        0.25,
                     child: Chart(_recentTransactions, defaultCurrency),
                   ),
                 ],
