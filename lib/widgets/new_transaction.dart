@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -55,7 +58,7 @@ class _NewTransactionState extends State<NewTransaction> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        top: 15,
+        // top: MediaQuery.of(context).viewInsets.top,
         left: 15,
         right: 15,
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -63,13 +66,19 @@ class _NewTransactionState extends State<NewTransaction> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
-            'New Expense',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          SizedBox(
+            height: 5,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Text(
+              'New Expense',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           TextField(
@@ -101,20 +110,32 @@ class _NewTransactionState extends State<NewTransaction> {
                     style: TextStyle(fontSize: 14),
                   ),
                 ),
-                FlatButton(
-                  onPressed: _presentDatePicker,
-                  child: Text(
-                    'Choose Date',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                Platform.isIOS
+                    ? CupertinoButton(
+                        child: Text(
+                          'Choose Date',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: _presentDatePicker,
+                      )
+                    : FlatButton(
+                        onPressed: _presentDatePicker,
+                        child: Text(
+                          'Choose Date',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),
           Container(
+            padding: EdgeInsets.all(10),
             alignment: AlignmentDirectional.topEnd,
             child: RaisedButton(
               onPressed: _submitTransactionData,
@@ -127,6 +148,9 @@ class _NewTransactionState extends State<NewTransaction> {
               ),
               textColor: Theme.of(context).textTheme.button.color,
             ),
+          ),
+          SizedBox(
+            height: 5,
           )
         ],
       ),
